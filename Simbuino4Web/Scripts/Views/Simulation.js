@@ -100,17 +100,7 @@ $(function () {
 				reader.onload = function (e) {
 					try
 					{
-						self.CurrentFirmware = reader.result.replaceAll("\r", "").split("\n")
-
-						// reset the emulator and load the game
-						AtmelContext.Reset();
-						HexDecoder.Decode(Bootloader);
-						self.Loaded = HexDecoder.Decode(self.CurrentFirmware);
-						AtmelProcessor.InitInstrTable();
-						Lcd.Reset();
-						Buttons.Reset();
-
-						$("#canvas").focus();
+						self.LoadHex(reader.result);
 					}
 					catch (e)
 					{
@@ -119,6 +109,20 @@ $(function () {
 				}
 				reader.readAsText(file);
 			}
+		},
+
+		LoadHex: function (hexFile) {
+		    this.CurrentFirmware = hexFile.replaceAll("\r", "").split("\n");
+
+		    // reset the emulator and load the game
+		    AtmelContext.Reset();
+		    HexDecoder.Decode(Bootloader);
+		    this.Loaded = HexDecoder.Decode(this.CurrentFirmware);
+		    AtmelProcessor.InitInstrTable();
+		    Lcd.Reset();
+		    Buttons.Reset();
+
+		    $("#canvas").focus();
 		},
 
 		OnLoadImg: function () {
