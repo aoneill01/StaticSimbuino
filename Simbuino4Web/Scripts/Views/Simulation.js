@@ -40,8 +40,8 @@ $(function () {
 			this.CreateUpdateTimer();
 
 			// intercept key messages
-			this.Canvas.addEventListener("keydown", function (e) { self.ProcessKey(e.keyCode, true) }, true);
-			this.Canvas.addEventListener("keyup", function (e) { self.ProcessKey(e.keyCode, false) }, true);
+			document.addEventListener("keydown", function (e) { self.ProcessKey(e.keyCode, true) }, true);
+			document.addEventListener("keyup", function (e) { self.ProcessKey(e.keyCode, false) }, true);
 
 			// handle button events
 			$("#hexInput").change(function (e) { self.OnLoadHex(); });
@@ -122,7 +122,7 @@ $(function () {
 		    Lcd.Reset();
 		    Buttons.Reset();
 
-		    $("#canvas").focus();
+		    $(this.Canvas).focus();
 		},
 
 		OnLoadImg: function () {
@@ -143,7 +143,7 @@ $(function () {
 				AtmelContext.Reset();
 				Lcd.Reset();
 				Buttons.Reset();
-				$("#canvas").focus();
+				$(this.Canvas).focus();
 			}
 			try
 			{
@@ -154,7 +154,7 @@ $(function () {
 				Lcd.Reset();
 				Buttons.Reset();
 
-				$("#canvas").focus();
+				$(this.Canvas).focus();
 			}
 			catch (e) {
 			}
@@ -170,7 +170,7 @@ $(function () {
 				Buttons.Reset();
 				AtmelProcessor.PC = AtmelProcessor.BootloaderAddr;				
 
-				$("#canvas").focus();
+				$(this.Canvas).focus();
 			}
 			catch (e) {
 			}
@@ -186,7 +186,7 @@ $(function () {
 				Lcd.Reset();
 				Buttons.Reset();
 
-				$("#canvas").focus();
+				$(this.Canvas).focus();
 			}
 			catch (e) {
 			}
