@@ -13,7 +13,7 @@
 			this.LastRefresh = 0;
 
 			this.Context = context;
-			this.Image = this.Context.getImageData(0, 0, 84, 48);
+			this.Image = this.Context.getImageData(0, 0, 84 * 8, 48 * 8);
 
 			this.SCE_PORT = AtmelContext.C; // A1
 			this.SCE_BIT = 1;
@@ -165,25 +165,35 @@
 			var foreG = this.LcdForeground.G;
 			var foreB = this.LcdForeground.B;
 			var pixels = this.Pixels;
-			var num_pixels = 84 * 48;
-			var src = 0;
-			var dst = 0;
+
 			var data = this.Image.data;
-			for (var i = 0; i < num_pixels; i++)
-			{
-				if (pixels[src++])
-				{
-					data[dst++] = foreR;
-					data[dst++] = foreG;
-					data[dst++] = foreB;
+			for (var row = 0; row < this.Height; row++) {
+				for (var col = 0; col < this.Width; col++) {
+					if (pixels [row * this.Width + col]) {
+						for (var j = 0; j < 8; j++) {
+							for (var k = 0; k < 8; k++) {
+								var addr = 4 * (8 * 8 * row * this.Width + 8 * col + j + 8 * k * this.Width);
+								data[addr] = foreR;
+								data[addr + 1] = foreG;
+								data[addr + 2] = foreB;
+								data[addr + 3] = 255;
+							}
+						}
+					}
+					else {
+						for (var j = 0; j < 8; j++) {
+							for (var k = 0; k < 8; k++) {
+								var addr = 4 * (8 * 8 * row * this.Width + 8 * col + j + 8 * k * this.Width);
+								data[addr] = backR;
+								data[addr + 1] = backG;
+								data[addr + 2] = backB;
+								data[addr + 3] = 255;
+							}
+						}
+					}
 				}
-				else {
-					data[dst++] = backR;
-					data[dst++] = backG;
-					data[dst++] = backB;
-				}
-				data[dst++] = 255;
 			}
+			
 			this.Context.putImageData(this.Image, 0, 0);
 		}
 

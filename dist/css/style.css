@@ -1,3 +1,8 @@
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+
 body {
     background-color: #333;
     font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
@@ -9,8 +14,6 @@ canvas {
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 20px;
-	width: 630px;
-    height: 360px;
 	border: none;
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
@@ -31,4 +34,17 @@ canvas:focus {
 #directions table {
     display: inline-block;
     margin: 10px;
+}
+
+footer {
+    padding: .2em;
+    font-size: .7em;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+a, a:visited {
+    color: #bbb;
 }
