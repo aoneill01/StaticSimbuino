@@ -7,7 +7,8 @@
 			var self = this;
 			this.Width = 84;
 			this.Height = 48;
-			this.Pixels = []
+			this.Pixels = [];
+			this.PrevPixels = [];
 			this.ImageChanged = [];
 			this.PropertyChanged = [];
 			this.LastRefresh = 0;
@@ -37,12 +38,16 @@
 		Reset: function()
 		{
 			this.Pixels = [];
+			this.PrevPixels = [];
 			var num_pixels = this.Width * this.Height;
-			for (var i=0; i<num_pixels; i++)
+			for (var i=0; i<num_pixels; i++) {
 				this.Pixels[i] = 0;
+				this.PrevPixels[i] = 0;
+			}
 			this.LastRefresh = 0;
 			this.LcdBackground = { R: 0x8f, G: 0xa7, B: 0x9a };
 			this.LcdForeground = { R: 0x40, G: 0x40, B: 0x40 };
+			this.LcdIntermediate = { R: 0x70, G: 0x80, B: 0x71 };
 			this.LcdBacklight = { R: 0xce, G: 0xdd, B: 0xe7 };
 			this.LcdCurrentBacklight = { R: 0, G: 0, B: 0 };
 			this.Refresh(true);
@@ -58,12 +63,20 @@
 			this.CurrentX = 0;
 			this.CurrentY = 0;
 			this.ExtendedMode = false;
-			for (var i = 0; i < this.Pixels.length; i++)
+			for (var i = 0; i < this.Pixels.length; i++) {
 				this.Pixels[i] = 0;
+				this.PrevPixels[i] = 0;
+			}
 		},
 
 		SetPixel: function(x, y, color)
 		{
+			if (x == 0 && y == 0) {
+				var num_pixels = this.Width * this.Height;
+				for (var i=0; i<num_pixels; i++) {
+					this.PrevPixels[i] = this.Pixels[i];
+				}
+			}
 			var ofs = y * this.Width + x;
 			if (color == 0)
 				this.Pixels[y * this.Width + x] = 0;
@@ -164,7 +177,11 @@
 			var foreR = this.LcdForeground.R;
 			var foreG = this.LcdForeground.G;
 			var foreB = this.LcdForeground.B;
+			var interR = this.LcdIntermediate.R;
+			var interG = this.LcdIntermediate.G;
+			var interB = this.LcdIntermediate.B;
 			var pixels = this.Pixels;
+			var prevPixels = this.PrevPixels;
 
 			var data = this.Image.data;
 			for (var row = 0; row < this.Height; row++) {
@@ -176,6 +193,17 @@
 								data[addr] = foreR;
 								data[addr + 1] = foreG;
 								data[addr + 2] = foreB;
+								data[addr + 3] = 255;
+							}
+						}
+					}
+					else if (prevPixels [row * this.Width + col]) {
+						for (var j = 0; j < 8; j++) {
+							for (var k = 0; k < 8; k++) {
+								var addr = 4 * (8 * 8 * row * this.Width + 8 * col + j + 8 * k * this.Width);
+								data[addr] = interR;
+								data[addr + 1] = interG;
+								data[addr + 2] = interB;
 								data[addr + 3] = 255;
 							}
 						}
